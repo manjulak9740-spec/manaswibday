@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday Manaswi</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400;1,600&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: radial-gradient(circle at center, #16102b 0%, #07040d 100%);
+        color: #f3f4f6;
+        font-family: "Poppins", sans-serif;
+        min-height: 100vh;
+        overflow: hidden;
+        position: relative;
+      }
+
+      :root {
+        --gold: #f3cd82;
+        --gold-glow: rgba(243, 205, 130, 0.5);
+        --magic-pink: rgba(244, 114, 182, 0.4);
+      }
+
+      /* --- Canvas Layers --- */
+      .stars-container,
+      #fireworks-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      .stars-container {
+        z-index: 1;
+      }
+      #fireworks-canvas {
+        z-index: 6;
+      }
+
+      /* --- STREAMING_CHUNK: Styling the blooming intro overlay screen... --- */
+      #intro-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #07040d;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        transition: opacity 1.2s ease;
+      }
+
+      .intro-top-text {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 1.8rem;
+        font-weight: 500;
+        color: var(--gold);
+        text-shadow: 0 0 20px var(--gold-glow), 0 0 5px #ffffff;
+        letter-spacing: 2px;
+        margin-bottom: 50px;
+        text-align: center;
+        max-width: 800px;
+        line-height: 1.4;
+        opacity: 0;
+        animation: fadeInSimple 2s ease 0.5s forwards;
+      }
+
+      .intro-daisy {
+        width: 130px;
+        height: 130px;
+        transform: scale(0);
+        opacity: 0;
+        animation: bloomIntro 2.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.7))
+          drop-shadow(0 0 10px var(--gold));
+      }
+
+      .intro-btn {
+        margin-top: 50px;
+        background: linear-gradient(
+          135deg,
+          rgba(243, 205, 130, 0.1),
+          rgba(244, 114, 182, 0.1)
+        );
+        border: 1.5px solid var(--gold);
+        padding: 0.9rem 2.8rem;
+        border-radius: 50px;
+        color: #ffffff;
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 1.25rem;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 1.2s ease 2s forwards;
+        box-shadow: 0 0 20px var(--gold-glow);
+        transition: all 0.4s ease;
+      }
+
+      .intro-btn:hover {
+        background: var(--gold);
+        color: #07040d;
+        box-shadow: 0 0 35px var(--gold-glow), 0 0 15px #ffffff;
+        transform: scale(1.05);
+      }
+
+      @keyframes bloomIntro {
+        0% {
+          transform: scale(0) rotate(-45deg);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInSimple {
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* --- STREAMING_CHUNK: Designing core fairytale card slider... --- */
+      .wrapper {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        z-index: 5;
+        opacity: 0;
+        transition: opacity 1.2s ease;
+      }
+
+      .slide {
+        position: absolute;
+        text-align: center;
+        max-width: 620px;
+        width: 100%;
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(0.93) translateY(10px);
+        transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .slide.active {
+        position: relative;
+        opacity: 1;
+        pointer-events: auto;
+        transform: scale(1) translateY(0);
+      }
+
+      .title {
+        font-family: "Playfair Display", serif;
+        font-size: 2.6rem;
+        font-style: italic;
+        font-weight: 600;
+        color: var(--gold);
+        text-shadow: 0 0 20px var(--gold-glow), 0 0 5px #ffffff;
+        margin-bottom: 1.8rem;
+        line-height: 1.3;
+      }
+
+      .message-box {
+        background: rgba(22, 14, 38, 0.55);
+        border: 1px solid rgba(243, 205, 130, 0.25);
+        border-radius: 24px;
+        padding: 2.2rem 2.8rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6),
+          inset 0 0 15px rgba(244, 114, 182, 0.05);
+        backdrop-filter: blur(12px);
+        margin-bottom: 1.8rem;
+        width: 100%;
+      }
+
+      .message {
+        font-size: 1.08rem;
+        line-height: 1.9;
+        color: #e5e7eb;
+        font-weight: 300;
+        letter-spacing: 0.3px;
+      }
+
+      .signature {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 1.15rem;
+        color: var(--gold);
+        margin-bottom: 2rem;
+        text-shadow: 0 0 8px rgba(243, 205, 130, 0.3);
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .next-btn {
+        background: rgba(7, 4, 13, 0.7);
+        border: 1px solid var(--gold);
+        padding: 0.85rem 2.5rem;
+        border-radius: 50px;
+        color: #ffffff;
+        font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 15px rgba(243, 205, 130, 0.2);
+      }
+
+      .next-btn:hover {
+        background: var(--gold);
+        color: #07040d;
+        box-shadow: 0 0 30px var(--gold-glow), 0 0 10px rgba(255, 255, 255, 0.5);
+        transform: translateY(-3px);
+      }
+
+      /* --- STREAMING_CHUNK: Formatting floating image slots... --- */
+      .photo-frame {
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        padding: 6px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(243, 205, 130, 0.3);
+        border-radius: 16px;
+        box-shadow: 0 0 25px rgba(243, 205, 130, 0.15),
+          0 0 10px rgba(244, 114, 182, 0.1);
+        animation: floatAnimation 7s ease-in-out infinite alternate;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 1.2s ease, transform 1.2s ease;
+      }
+
+      .photo-frame.visible {
+        opacity: 1;
+      }
+      .photo-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+      }
+
+      .photo-frame:nth-child(1) {
+        animation-delay: 0s;
+        top: 7%;
+        left: 7%;
+        transform: rotate(-5deg);
+      }
+      .photo-frame:nth-child(2) {
+        animation-delay: 1.2s;
+        top: 6%;
+        left: 43%;
+        transform: rotate(3deg);
+      }
+      .photo-frame:nth-child(3) {
+        animation-delay: 0.4s;
+        top: 7%;
+        left: 78%;
+        transform: rotate(-4deg);
+      }
+      .photo-frame:nth-child(4) {
+        animation-delay: 1.6s;
+        top: 41%;
+        left: 6%;
+        transform: rotate(4deg);
+      }
+      .photo-frame:nth-child(5) {
+        animation-delay: 0.8s;
+        top: 41%;
+        left: 82%;
+        transform: rotate(-6deg);
+      }
+      .photo-frame:nth-child(6) {
+        animation-delay: 2s;
+        bottom: 11%;
+        left: 7%;
+        transform: rotate(-3deg);
+      }
+      .photo-frame:nth-child(7) {
+        animation-delay: 0.6s;
+        bottom: 10%;
+        left: 43%;
+        transform: rotate(5deg);
+      }
+      .photo-frame:nth-child(8) {
+        animation-delay: 1.4s;
+        bottom: 11%;
+        left: 78%;
+        transform: rotate(-4deg);
+      }
+
+      /* --- STREAMING_CHUNK: Styling the butterfly paths... --- */
+      .butterfly {
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        background: radial-gradient(circle, #fed7aa 20%, transparent 70%);
+        clip-path: polygon(50% 45%, 0% 0%, 25% 75%, 50% 65%, 75% 75%, 100% 0%);
+        z-index: 4;
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      .butterfly.active-swarm {
+        opacity: 0.85;
+      }
+
+      .bf1 { animation: path1 22s linear infinite, wing 0.25s linear infinite alternate; filter: drop-shadow(0 0 8px #f472b6); }
+      .bf2 { animation: path2 18s linear infinite, wing 0.2s linear infinite alternate; filter: drop-shadow(0 0 8px #facc15); }
+      .bf3 { animation: path3 25s linear infinite, wing 0.3s linear infinite alternate; filter: drop-shadow(0 0 8px #e9d5ff); }
+      .bf4 { animation: path4 20s linear infinite, wing 0.22s linear infinite alternate; filter: drop-shadow(0 0 8px #38bdf8); }
+      .bf5 { animation: path5 24s linear infinite, wing 0.28s linear infinite alternate; filter: drop-shadow(0 0 8px #f472b6); }
+      .bf6 { animation: path6 19s linear infinite, wing 0.21s linear infinite alternate; filter: drop-shadow(0 0 8px #facc15); }
+      .bf7 { animation: path7 26s linear infinite, wing 0.29s linear infinite alternate; filter: drop-shadow(0 0 8px #e9d5ff); }
+      .bf8 { animation: path8 21s linear infinite, wing 0.24s linear infinite alternate; filter: drop-shadow(0 0 8px #6ee7b7); }
+      .bf9 { animation: path1 28s linear infinite, wing 0.26s linear infinite alternate; animation-delay: -4s; filter: drop-shadow(0 0 8px #38bdf8); }
+      .bf10 { animation: path2 23s linear infinite, wing 0.23s linear infinite alternate; animation-delay: -3s; filter: drop-shadow(0 0 8px #f472b6); }
+      .bf11 { animation: path3 29s linear infinite, wing 0.27s linear infinite alternate; animation-delay: -6s; filter: drop-shadow(0 0 8px #facc15); }
+      .bf12 { animation: path4 25s linear infinite, wing 0.22s linear infinite alternate; animation-delay: -2s; filter: drop-shadow(0 0 8px #e9d5ff); }
+      .bf13 { animation: path5 31s linear infinite, wing 0.31s linear infinite alternate; animation-delay: -5s; filter: drop-shadow(0 0 8px #6ee7b7); }
+      .bf14 { animation: path6 27s linear infinite, wing 0.25s linear infinite alternate; animation-delay: -7s; filter: drop-shadow(0 0 8px #38bdf8); }
+      .bf15 { animation: path7 33s linear infinite, wing 0.28s linear infinite alternate; animation-delay: -1s; filter: drop-shadow(0 0 8px #f472b6); }
+      .bf16 { animation: path8 26s linear infinite, wing 0.24s linear infinite alternate; animation-delay: -8s; filter: drop-shadow(0 0 8px #facc15); }
+      .bf17 { animation: path1 34s linear infinite, wing 0.23s linear infinite alternate; animation-delay: -10s; filter: drop-shadow(0 0 8px #e9d5ff); }
+      .bf18 { animation: path2 30s linear infinite, wing 0.27s linear infinite alternate; animation-delay: -12s; filter: drop-shadow(0 0 8px #6ee7b7); }
+      .bf19 { animation: path3 32s linear infinite, wing 0.21s linear infinite alternate; animation-delay: -11s; filter: drop-shadow(0 0 8px #38bdf8); }
+      .bf20 { animation: path4 35s linear infinite, wing 0.29s linear infinite alternate; animation-delay: -14s; filter: drop-shadow(0 0 8px #f472b6); }
+      .bf21 { animation: path5 33s linear infinite, wing 0.25s linear infinite alternate; animation-delay: -9s; filter: drop-shadow(0 0 8px #facc15); }
+      .bf22 { animation: path6 29s linear infinite, wing 0.28s linear infinite alternate; animation-delay: -13s; filter: drop-shadow(0 0 8px #e9d5ff); }
+      .bf23 { animation: path7 35s linear infinite, wing 0.22s linear infinite alternate; animation-delay: -15s; filter: drop-shadow(0 0 8px #6ee7b7); }
+      .bf24 { animation: path8 31s linear infinite, wing 0.26s linear infinite alternate; animation-delay: -11s; filter: drop-shadow(0 0 8px #38bdf8); }
+
+      @keyframes wing {
+        0% { transform: scaleX(1); }
+        100% { transform: scaleX(0.2); }
+      }
+      @keyframes path1 { 0% { top: 95%; left: -5%; } 100% { top: -10%; left: 105%; } }
+      @keyframes path2 { 0% { top: 105%; left: 85%; } 100% { top: -10%; left: 5%; } }
+      @keyframes path3 { 0% { top: 35%; left: -5%; } 100% { top: 85%; left: 105%; } }
+      @keyframes path4 { 0% { top: -5%; left: 25%; } 100% { top: 105%; left: 85%; } }
+      @keyframes path5 { 0% { top: 90%; left: 15%; } 100% { top: -10%; left: 90%; } }
+      @keyframes path6 { 0% { top: 10%; left: 105%; } 100% { top: 90%; left: -5%; } }
+      @keyframes path7 { 0% { top: 105%; left: 50%; } 100% { top: -10%; left: 50%; } }
+      @keyframes path8 { 0% { top: 55%; left: 105%; } 100% { top: 5%; left: -5%; } }
+
+      /* --- STREAMING_CHUNK: Setting up the elegant daisy garland borders... --- */
+      .daisy-edge {
+        position: absolute;
+        z-index: 10;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 1.2s ease;
+      }
+
+      .edge-top { top: 0; left: 0; width: 100%; height: 35px; flex-direction: row; }
+      .edge-bottom { bottom: 0; left: 0; width: 100%; height: 35px; flex-direction: row; }
+      .edge-left { top: 0; left: 0; width: 35px; height: 100%; flex-direction: column; }
+      .edge-right { top: 0; right: 0; width: 35px; height: 100%; flex-direction: column; }
+
+      .daisy-svg {
+        width: 25px;
+        height: 25px;
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 2px var(--gold));
+        opacity: 0.85;
+      }
+
+      @keyframes floatAnimation {
+        0% { transform: translateY(0px) rotate(-3deg); }
+        100% { transform: translateY(-10px) rotate(3deg); }
+      }
+
+      .typing::after {
+        content: "✨";
+        animation: blink 0.7s infinite;
+      }
+      @keyframes blink {
+        50% { opacity: 0; }
+      }
+
+      /* --- Hidden Resilient Diagnostic Dashboard --- */
+      #diagnostic-console {
+        position: fixed;
+        bottom: -350px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 500px;
+        height: 300px;
+        background: rgba(10, 5, 20, 0.95);
+        border: 2px solid var(--gold);
+        border-radius: 20px 20px 0 0;
+        z-index: 200;
+        padding: 15px;
+        color: #ffffff;
+        font-family: monospace;
+        font-size: 0.85rem;
+        overflow-y: auto;
+        box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
+        transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      #diagnostic-console.open {
+        bottom: 0;
+      }
+      .diag-title {
+        font-weight: bold;
+        color: var(--gold);
+        border-bottom: 1px solid rgba(243, 205, 130, 0.3);
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .diag-item {
+        margin-bottom: 6px;
+        line-height: 1.3;
+      }
+      .diag-fail { color: #f87171; }
+      .diag-success { color: #4ade80; }
+
+      /* --- STREAMING_CHUNK: Making the photo frames fully responsive for mobile screens... --- */
+      @media (max-width: 1024px) {
+        body {
+          overflow-y: auto;
+        }
+        
+        /* Make photo frames visible on mobile and scale them down to sit perfectly along the edges */
+        .photo-frame {
+          width: 70px !important;
+          height: 70px !important;
+          padding: 4px !important;
+          border-radius: 12px !important;
+          box-shadow: 0 0 15px rgba(243, 205, 130, 0.1),
+            0 0 5px rgba(244, 114, 182, 0.05) !important;
+        }
+        .photo-frame img {
+          border-radius: 8px !important;
+        }
+
+        /* Reposition them gracefully on smaller screens away from the central message card */
+        .photo-frame:nth-child(1) { top: 6% !important; left: 4% !important; }
+        .photo-frame:nth-child(2) { top: 5% !important; left: 42% !important; }
+        .photo-frame:nth-child(3) { top: 6% !important; left: 78% !important; }
+        .photo-frame:nth-child(4) { top: 40% !important; left: 3% !important; }
+        .photo-frame:nth-child(5) { top: 40% !important; left: 79% !important; }
+        .photo-frame:nth-child(6) { bottom: 9% !important; left: 4% !important; }
+        .photo-frame:nth-child(7) { bottom: 8% !important; left: 42% !important; }
+        .photo-frame:nth-child(8) { bottom: 9% !important; left: 78% !important; }
+      }
+
+      @media (max-width: 480px) {
+        /* Extra small screen adjustments to maximize layout aesthetics */
+        .photo-frame {
+          width: 58px !important;
+          height: 58px !important;
+          padding: 3px !important;
+          border-radius: 8px !important;
+        }
+        .photo-frame img {
+          border-radius: 5px !important;
+        }
+        .message-box {
+          padding: 1.5rem 1.6rem !important;
+        }
+        .title {
+          font-size: 1.8rem !important;
+          margin-bottom: 1.2rem !important;
+        }
+        .message {
+          font-size: 0.95rem !important;
+          line-height: 1.7 !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Intro blooming screen layer -->
+    <div id="intro-overlay">
+      <div class="intro-top-text">
+        To the most beautiful woman in the entire universe
+      </div>
+
+      <svg
+        class="intro-daisy"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="12" cy="12" r="3" fill="#facc15" />
+        <circle cx="12" cy="5" r="2.5" fill="white" />
+        <circle cx="12" cy="19" r="2.5" fill="white" />
+        <circle cx="5" cy="12" r="2.5" fill="white" />
+        <circle cx="19" cy="12" r="2.5" fill="white" />
+        <circle cx="7" cy="7" r="2.5" fill="white" />
+        <circle cx="17" cy="17" r="2.5" fill="white" />
+        <circle cx="7" cy="17" r="2.5" fill="white" />
+        <circle cx="17" cy="7" r="2.5" fill="white" />
+      </svg>
+
+      <button class="intro-btn" onclick="startExperience()">
+        Begin the journey, Daisydew ✨
+      </button>
+    </div>
+
+    <!-- 120 Sparkly Blinking Stars & Fireflies Layout Layer -->
+    <div class="stars-container"></div>
+    <canvas id="fireworks-canvas"></canvas>
+
+    <!-- 24 Pixie Swarm Butterflies -->
+    <div class="butterfly bf1"></div>
+    <div class="butterfly bf2"></div>
+    <div class="butterfly bf3"></div>
+    <div class="butterfly bf4"></div>
+    <div class="butterfly bf5"></div>
+    <div class="butterfly bf6"></div>
+    <div class="butterfly bf7"></div>
+    <div class="butterfly bf8"></div>
+    <div class="butterfly bf9"></div>
+    <div class="butterfly bf10"></div>
+    <div class="butterfly bf11"></div>
+    <div class="butterfly bf12"></div>
+    <div class="butterfly bf13"></div>
+    <div class="butterfly bf14"></div>
+    <div class="butterfly bf15"></div>
+    <div class="butterfly bf16"></div>
+    <div class="butterfly bf17"></div>
+    <div class="butterfly bf18"></div>
+    <div class="butterfly bf19"></div>
+    <div class="butterfly bf20"></div>
+    <div class="butterfly bf21"></div>
+    <div class="butterfly bf22"></div>
+    <div class="butterfly bf23"></div>
+    <div class="butterfly bf24"></div>
+
+    <!-- Framing Layout Galleries -->
+    <div id="image-canvas">
+      <div class="photo-frame"><img /></div>
+      <div class="photo-frame"><img /></div>
+      <div class="photo-frame"><img /></div>
+      <div class="photo-frame"><img /></div>
+      <div class="photo-frame"><img /></div>
+      <div class="photo-frame"><img /></div>
+      <div class="photo-frame"><img /></div>
+      <div class="photo-frame"><img /></div>
+    </div>
+
+    <!-- Main Dynamic Presentation Arc -->
+    <main class="wrapper" id="main-wrapper">
+      <!-- Slide 1 (Shiva Line Entry Card) -->
+      <section class="slide active" id="slide-1">
+        <h1 class="title data-type" data-text="Pure Perfection"></h1>
+        <div class="message-box">
+          <p class="message">
+            Exactly 7303 days ago, Shiva decided it's time for his best creation
+            till date — and it turned out to be you.
+          </p>
+        </div>
+        <p class="signature" onclick="handleSignatureTap()">With love, always ♥</p>
+        <button class="next-btn" onclick="goToSlide(2)">
+          <span>Bloom to the Next Memory</span> 🍧
+        </button>
+      </section>
+
+      <!-- Slide 2 -->
+      <section class="slide" id="slide-2">
+        <h1 class="title">Your day</h1>
+        <div class="message-box">
+          <p class="message">
+            Today is all about you and everything that makes you who you are.. I hope this year starts with peace, smiles, and a kind of happiness that stays with you longer than just today.
+          </p>
+        </div>
+        <p class="signature" onclick="handleSignatureTap()">With love, always ♥</p>
+        <button class="next-btn" onclick="goToSlide(3)">
+          <span>Bloom to the Next Memory</span> 🍧
+        </button>
+      </section>
+
+      <!-- Slide 3 -->
+      <section class="slide" id="slide-3">
+        <h1 class="title">A True Blessing</h1>
+        <div class="message-box">
+          <p class="message">
+            You honestly have a rare kind of spark. It’s in the way you carry yourself, the way you express yourself, and the way you simply exist. Never forget that you have a presence that leaves an impact. Thank you for bringing so much sweet magic and absolute warmth into
+            the world just by being genuinely you.
+          </p>
+        </div>
+        <p class="signature" onclick="handleSignatureTap()">With love, always ♥</p>
+        <button class="next-btn" onclick="goToSlide(4)">
+          <span>Bloom to the Next Memory</span> 🍧
+        </button>
+      </section>
+
+      <!-- Slide 4 -->
+      <section class="slide" id="slide-4">
+        <h1 class="title">Endless Magic</h1>
+        <div class="message-box">
+          <p class="message">
+            I hope you stop doubting yourself so much and start seeing what others probably already see in you. You’re capable, you’re evolving, and you’re doing better than you give yourself credit for.
+          </p>
+        </div>
+        <p class="signature" onclick="handleSignatureTap()">With love, always ♥</p>
+        <button class="next-btn" onclick="goToSlide(5)">
+          <span>Bloom to the Next Memory</span> 🍧
+        </button>
+      </section>
+
+      <!-- Slide 5 -->
+      <section class="slide" id="slide-5">
+        <h1 class="title">Bright Days</h1>
+        <div class="message-box">
+          <p class="message">
+            Every single shared memory made with you shines brighter than
+            anything else. You made ordinary days feel incredibly rare.
+          </p>
+        </div>
+        <p class="signature" onclick="handleSignatureTap()">With love, always ♥</p>
+        <button class="next-btn" onclick="goToSlide(6)">
+          <span>Bloom to the Next Memory</span> 🍧
+        </button>
+      </section>
+
+      <!-- Slide 6 -->
+      <section class="slide" id="slide-6">
+        <h1 class="title">Your Dreams</h1>
+        <div class="message-box">
+          <p class="message">
+            You don’t need to rush anything. Good things have their own timing, and you’re allowed to grow at a pace that feels comfortable for you. Keep moving, even in small steps.
+          </p>
+        </div>
+        <p class="signature" onclick="handleSignatureTap()">With love, always ♥</p>
+        <button class="next-btn" onclick="goToSlide(7)">
+          <span>Bloom to the Next Memory</span> 🍧
+        </button>
+      </section>
+
+      <!-- Slide 7 -->
+      <section class="slide" id="slide-7">
+        <h1 class="title">Growing and Glowing</h1>
+        <div class="message-box">
+          <p class="message">
+            Here's to fully celebrating you today, tomorrow, and through every
+            amazing new turning chapter life brings your way next.I hope your days feel lighter this year—more clarity, more confidence.
+          </p>
+        </div>
+        <p class="signature" onclick="handleSignatureTap()">With love, always ♥</p>
+        <button class="next-btn" onclick="goToSlide(8)">
+          <span>Bloom to the Next Memory</span> 🍧
+        </button>
+      </section>
+
+      <!-- Slide 8 -->
+      <section class="slide" id="slide-8">
+        <h1 class="title">Incomparable</h1>
+        <div class="message-box">
+          <p class="message">
+            No words can truly capture how amazing you are, but I hope this
+            web page reminds you of your infinite worth.
+          </p>
+        </div>
+        <p class="signature" onclick="handleSignatureTap()">With love, always ♥</p>
+        <button class="next-btn" onclick="goToSlide(9)">
+          <span>Bloom to the Next Memory</span> 🍧
+        </button>
+      </section>
+
+      <!-- Slide 9 -->
+      <section class="slide" id="slide-9">
+        <h1 class="title">Pure Serenity</h1>
+        <div class="message-box">
+          <p class="message">
+            Just being around your energy brought a deep sense of peace that
+            can't be easily found anywhere else in the world. Like little dewdrops on a fresh daisy, your aura is unmatched.
+          </p>
+        </div>
+        <p class="signature" onclick="handleSignatureTap()">With love, always ♥</p>
+        <button class="next-btn" onclick="goToSlide(10)">
+          <span>Bloom to the Next Memory</span> 🍧
+        </button>
+      </section>
+
+      <!-- Slide 10 -->
+      <section class="slide" id="slide-10">
+        <h1 class="title">Time Stands Still</h1>
+        <div class="message-box">
+          <p class="message">
+            Every single minute spent laughing and talking out and even staying quiet around you was a privilige 
+           and  a lifelong treasure I hold close.
+          </p>
+        </div>
+        <p class="signature" onclick="handleSignatureTap()">With love, always ♥</p>
+        <button class="next-btn" onclick="goToSlide(11)">
+          <span>Bloom to the Next Memory</span> 🍧
+        </button>
+      </section>
+
+      <!-- Slide 11 (Grand Finale) -->
+      <section class="slide" id="slide-11">
+        <h1 class="title">Happy Birthday!</h1>
+        <div class="message-box">
+          <p class="message">
+            Wishing the absolute happiest, brightest birthdays to you, Manaswi!
+            May your days stay as perfect as you are. I hope you buy everything you have dreamed of and always be loved and cared. I just hope you are always  happy forever.
+          </p>
+        </div>
+        <p class="signature" onclick="handleSignatureTap()">Happy Birthday, Manaswi! ✨</p>
+        <button class="next-btn" onclick="goToSlide(1)">
+          <span>Back to the Start</span> 🍧
+        </button>
+      </section>
+    </main>
+
+    <!-- Border Grids -->
+    <div class="daisy-edge edge-top" id="d-top"></div>
+    <div class="daisy-edge edge-bottom" id="d-bottom"></div>
+    <div class="daisy-edge edge-left" id="d-left"></div>
+    <div class="daisy-edge edge-right" id="d-right"></div>
+
+    <!-- Hidden Resilient Diagnostic Console -->
+    <div id="diagnostic-console">
+      <div class="diag-title">
+        <span>🔧 Fairytale Asset Debugger</span>
+        <span onclick="toggleConsole()" style="cursor:pointer;color:#f87171;">[Close]</span>
+      </div>
+      <div id="diag-log">Diagnostic panel initialized. Triple-click any "With love, always ♥" text to hide this panel.</div>
+    </div>
+
+    <script>
+      /* --- STREAMING_CHUNK: Setting up dynamic fallback image loader... --- */
+      const imageCount = 43; 
+      const extensions = [
+        '.jpg.jpeg', 
+        '.JPG.jpeg', 
+        '.jpg', 
+        '.JPG', 
+        '.png', 
+        '.PNG', 
+        '.jpeg', 
+        '.JPEG', 
+        '.webp', 
+        '.WEBP'
+      ];
+      const baseNames = [];
+      
+      for (let i = 1; i <= imageCount; i++) {
+        baseNames.push(`pic${i}`);
+      }
+
+      // Safe debug logger
+      function logDebug(message, type = 'normal') {
+        const logContainer = document.getElementById("diag-log");
+        const logItem = document.createElement("div");
+        logItem.className = `diag-item ${type === 'fail' ? 'diag-fail' : type === 'success' ? 'diag-success' : ''}`;
+        logItem.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+        logContainer.appendChild(logItem);
+        logContainer.scrollTop = logContainer.scrollHeight;
+      }
+
+      function updateScatteredImages() {
+        const frames = document.querySelectorAll(".photo-frame");
+        frames.forEach((f) => f.classList.remove("visible"));
+
+        // Shuffle base image names
+        const shuffled = [...baseNames];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        setTimeout(() => {
+          frames.forEach((frame, index) => {
+            const imgTag = frame.querySelector("img");
+            if (imgTag) {
+              const base = shuffled[index];
+              let extIndex = 0;
+
+              // Error fallback logic cascade
+              imgTag.onerror = function() {
+                logDebug(`Failed to find: ${base}${extensions[extIndex]}`, 'fail');
+                extIndex++;
+                if (extIndex < extensions.length) {
+                  this.src = `${base}${extensions[extIndex]}`;
+                } else {
+                  // Fallback to a stunning gold placeholder card
+                  this.src = `https://placehold.co/140x140/16102b/f3cd82?text=Dewdrop+✨`;
+                  logDebug(`All extensions failed for ${base}. Loaded gold placeholder.`, 'fail');
+                  this.onerror = null;
+                }
+              };
+
+              imgTag.onload = function() {
+                if (!this.src.includes('placehold.co')) {
+                  logDebug(`Successfully loaded memory: ${this.src.split('/').pop()}`, 'success');
+                }
+              };
+
+              // Start loading sequence with first extension (.jpg.jpeg)
+              imgTag.src = `${base}${extensions[0]}`;
+              frame.classList.add("visible");
+            }
+          });
+        }, 400);
+      }
+
+      /* --- STREAMING_CHUNK: Setting up interactive elements and page animations... --- */
+      let signatureTapCount = 0;
+      let tapTimer = null;
+
+      function handleSignatureTap() {
+        signatureTapCount++;
+        clearTimeout(tapTimer);
+        tapTimer = setTimeout(() => {
+          signatureTapCount = 0;
+        }, 1000);
+
+        if (signatureTapCount >= 3) {
+          toggleConsole();
+          signatureTapCount = 0;
+        }
+      }
+
+      function toggleConsole() {
+        const consoleEl = document.getElementById("diagnostic-console");
+        consoleEl.classList.toggle("open");
+      }
+
+      function typeWriterEffect(element, callback) {
+        const text = element.getAttribute("data-text");
+        element.textContent = "";
+        element.classList.add("typing");
+        let index = 0;
+
+        function typeNext() {
+          if (index < text.length) {
+            element.textContent += text.charAt(index);
+            index++;
+            setTimeout(typeNext, 65);
+          } else {
+            element.classList.remove("typing");
+            if (callback) callback();
+          }
+        }
+        typeNext();
+      }
+
+      function startExperience() {
+        document.getElementById("intro-overlay").style.opacity = "0";
+        setTimeout(() => {
+          document.getElementById("intro-overlay").style.display = "none";
+          document.getElementById("main-wrapper").style.opacity = "1";
+          document
+            .querySelectorAll(".daisy-edge")
+            .forEach((edge) => (edge.style.opacity = "1"));
+          document
+            .querySelectorAll(".butterfly")
+            .forEach((bf) => bf.classList.add("active-swarm"));
+
+          const firstTitle = document.querySelector("#slide-1 .data-type");
+          typeWriterEffect(firstTitle);
+        }, 1200);
+      }
+
+      let fireworkTimer = null;
+      function goToSlide(slideNumber) {
+        document
+          .querySelectorAll(".slide")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(`slide-${slideNumber}`).classList.add("active");
+        updateScatteredImages();
+
+        if (slideNumber === 11) {
+          startGrandFireworks();
+        } else {
+          stopGrandFireworks();
+        }
+      }
+
+      function createMagicSky() {
+        const container = document.querySelector(".stars-container");
+        for (let i = 0; i < 120; i++) {
+          const f = document.createElement("div");
+          f.style.position = "absolute";
+
+          const isFirefly = Math.random() > 0.6;
+          const size = Math.random() * (isFirefly ? 3 : 1.5) + 1;
+
+          f.style.width = `${size}px`;
+          f.style.height = `${size}px`;
+          f.style.background = isFirefly ? "#f3cd82" : "#ffffff";
+          f.style.borderRadius = "50%";
+          f.style.top = `${Math.random() * 100}vh`;
+          f.style.left = `${Math.random() * 100}vw`;
+
+          if (isFirefly) {
+            f.style.boxShadow = "0 0 12px #f3cd82, 0 0 4px #ffffff";
+            f.style.animation = `fairyFloat ${
+              Math.random() * 6 + 4
+            }s infinite ease-in-out alternate`;
+          } else {
+            f.style.boxShadow = "0 0 6px #ffffff";
+            f.style.animation = `pulse ${
+              Math.random() * 3 + 1.5
+            }s infinite alternate`;
+          }
+
+          f.style.opacity = Math.random();
+          container.appendChild(f);
+        }
+      }
+
+      function buildDaisyBorders() {
+        const daisySrc = `<svg class="daisy-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="#facc15"/><circle cx="12" cy="5" r="2.5" fill="white"/><circle cx="12" cy="19" r="2.5" fill="white"/><circle cx="5" cy="12" r="2.5" fill="white"/><circle cx="19" cy="12" r="2.5" fill="white"/><circle cx="7" cy="7" r="2.5" fill="white"/><circle cx="17" cy="17" r="2.5" fill="white"/><circle cx="7" cy="17" r="2.5" fill="white"/><circle cx="17" cy="7" r="2.5" fill="white"/></svg>`;
+
+        const horizCount = Math.floor(window.innerWidth / 38);
+        const vertCount = Math.floor(window.innerHeight / 38);
+
+        const topB = document.getElementById("d-top");
+        const botB = document.getElementById("d-bottom");
+        for (let i = 0; i < horizCount; i++) {
+          topB.insertAdjacentHTML("beforeend", daisySrc);
+          botB.insertAdjacentHTML("beforeend", daisySrc);
+        }
+
+        const leftB = document.getElementById("d-left");
+        const rightB = document.getElementById("d-right");
+        for (let i = 0; i < vertCount; i++) {
+          leftB.insertAdjacentHTML("beforeend", daisySrc);
+          rightB.insertAdjacentHTML("beforeend", daisySrc);
+        }
+      }
+
+      // --- STREAMING_CHUNK: Launching canvas elements & particle engines... ---
+      const canvas = document.getElementById("fireworks-canvas");
+      const ctx = canvas.getContext("2d");
+      let particles = [];
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      class Particle {
+        constructor(x, y, color) {
+          this.x = x;
+          this.y = y;
+          this.color = color;
+          this.radius = Math.random() * 2 + 1;
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 5 + 2.5;
+          this.vx = Math.cos(angle) * speed;
+          this.vy = Math.sin(angle) * speed;
+          this.alpha = 1;
+          this.decay = Math.random() * 0.012 + 0.01;
+        }
+        draw() {
+          ctx.save();
+          ctx.globalAlpha = this.alpha;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = this.color;
+          ctx.fill();
+          ctx.restore();
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.vy += 0.04; 
+          this.alpha -= this.decay;
+        }
+      }
+
+      function createExplosion(x, y) {
+        const colors = ["#f3cd82", "#ffffff", "#f472b6", "#e9d5ff", "#38bdf8"];
+        const randColor = colors[Math.floor(Math.random() * colors.length)];
+        for (let i = 0; i < 60; i++) {
+          particles.push(new Particle(x, y, randColor));
+        }
+      }
+
+      function animateFireworks() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles = particles.filter((p) => p.alpha > 0);
+        particles.forEach((p) => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animateFireworks);
+      }
+      requestAnimationFrame(animateFireworks);
+
+      function startGrandFireworks() {
+        if (fireworkTimer) return;
+        fireworkTimer = setInterval(() => {
+          const x = Math.random() * canvas.width;
+          const y = Math.random() * (canvas.height * 0.6) + canvas.height * 0.1;
+          createExplosion(x, y);
+        }, 700);
+      }
+
+      function stopGrandFireworks() {
+        clearInterval(fireworkTimer);
+        fireworkTimer = null;
+      }
+
+      window.onload = () => {
+        createMagicSky();
+        buildDaisyBorders();
+        updateScatteredImages();
+        logDebug("Page initialization complete.", "success");
+      };
+    </script>
+  </body>
+</html>
+```
+eof
+
+### To complete this on GitHub:
+1. Go to your `index.html` on GitHub.
+2. Click the **pencil icon** on the top right to edit it.
+3. Replace the entire code with the updated script above.
+4. Click **"Commit changes..."** to save.
+
+Give it about 60 seconds to build, clear your phone's browser cache (or open it in a private tab), and check out the updated site on your phone. You will see all those stunning, lovely mini-polaroid pictures loading up beautifully alongside the cards! Let me know when they show up on your screen!
